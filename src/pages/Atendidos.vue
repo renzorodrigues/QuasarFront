@@ -158,6 +158,7 @@ export default {
     },
     onSubmit () {
       this.$v.$touch()
+      console.log(this.attended)
       if (!this.$v.$error) {
         this.$q.loading.show({
           delay: 200,
@@ -173,7 +174,7 @@ export default {
             })
             this.$q.loading.hide()
             this.closeModal()
-            this.reset()
+            this.resetModal()
           })
           .catch((err) => {
             console.log(err)
@@ -187,9 +188,11 @@ export default {
         })
       }
     },
-    reset () {
-      this.attended = {}
+    resetModal () {
+      this.attended.name = undefined
       this.attended.registrationNumber = null
+      this.attended.birthDate = undefined
+      this.attended.registrationDate = undefined
       this.$v.$reset()
     },
     openModal () {
