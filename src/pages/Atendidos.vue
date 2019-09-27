@@ -9,6 +9,9 @@
         row-key="registrationNumber"
         selection="multiple"
         :loading="loading"
+        loading-label="Carregando..."
+        no-data-label="Sem dados disponíveis"
+        :selected-rows-label="selectedRowsLabel"
         :selected.sync="selected"
         :filter="filter"
       >
@@ -88,7 +91,7 @@
           </q-card-section>
           <q-card-actions align="right">
             <q-btn flat label="Cancelar" color="primary" size="12px" @click="resetModalRegister()" v-close-popup />
-            <q-btn label="Gravar" color="primary" size="12px" icon-right="send" @click="onSubmit()" />
+            <q-btn label="Gravar" color="primary" size="12px" icon-right="send" @click="postAttended()" />
           </q-card-actions>
         </q-card>
       </div>
@@ -131,7 +134,7 @@
           </q-card-section>
           <q-card-actions align="right">
             <q-btn flat label="Cancelar" color="primary" size="12px" v-close-popup />
-            <q-btn label="Editar" color="orange" size="12px" icon-right="send" @click="editAttended()" />
+            <q-btn label="Editar" color="orange" size="12px" icon-right="send" @click="putAttended()" />
           </q-card-actions>
         </q-card>
       </div>
@@ -233,10 +236,11 @@ export default {
             icon: 'warning',
             message: 'FALHA AO CARREGAR DADOS'
           })
+          this.loading = false
           throw new Error(err)
         })
     },
-    onSubmit () {
+    postAttended () {
       this.$v.attended.$touch()
       if (!this.$v.attended.$error) {
         this.$q.loading.show({
@@ -267,7 +271,7 @@ export default {
         })
       }
     },
-    editAttended () {
+    putAttended () {
       this.$v.editedAttended.$touch()
       if (!this.$v.editedAttended.$error) {
         this.$q.loading.show({
@@ -333,6 +337,7 @@ export default {
       this.attended.registrationNumber = null
       this.attended.birthDate = undefined
       this.attended.registrationDate = undefined
+      this.attended.gender = undefined
       this.$v.$reset()
     },
     openModalRegister () {
@@ -352,6 +357,9 @@ export default {
     },
     closeModalEdit () {
       this.modalEdit = false
+    },
+    selectedRowsLabel (numberOfRows) {
+      return numberOfRows > 1 ? numberOfRows + ' linhas selecionadas' : numberOfRows + 'linha selecionada'
     }
   }
 }
