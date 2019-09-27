@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Atendimento CCAU
+          Quasar App
         </q-toolbar-title>
 
         <div>Quasar v{{ $q.version }}</div>
