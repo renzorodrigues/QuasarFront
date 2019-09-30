@@ -71,7 +71,8 @@
             <q-datetime-picker
               v-model="attended.birthDate"
               label="Data Nascimento"
-              auto-update-value lang>
+              auto-update-value
+              lang="pt-BR">
             </q-datetime-picker>
             <q-datetime-picker
               v-model="attended.registrationDate"
@@ -114,7 +115,8 @@
             <q-datetime-picker
               v-model="editedAttended.birthDate"
               label="Data Nascimento"
-              auto-update-value lang>
+              auto-update-value
+              lang="pt-BR">
             </q-datetime-picker>
             <q-datetime-picker
               v-model="editedAttended.registrationDate"
@@ -347,13 +349,13 @@ export default {
       this.modalRegister = false
     },
     openModalEdit (row) {
+      this.modalEdit = true
       this.editedAttended.id = row.id
       this.editedAttended.name = row.name
       this.editedAttended.registrationNumber = row.registrationNumber
-      this.editedAttended.birthDate = row.birthDate
-      this.editedAttended.registrationDate = row.registrationDate
+      this.editedAttended.birthDate = moment(row.birthDate, 'DD/MM/YYYY').format('MM-DD-YYYY')
+      this.editedAttended.registrationDate = moment(row.registrationDate, 'DD/MM/YYYY').format('MM-DD-YYYY')
       this.editedAttended.gender = row.gender === 'Masculino' ? 'male' : 'female'
-      this.modalEdit = true
     },
     closeModalEdit () {
       this.modalEdit = false
