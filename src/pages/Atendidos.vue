@@ -72,15 +72,18 @@
               v-model="attended.birthDate"
               label="Data Nascimento"
               auto-update-value
+              :error="$v.attended.birthDate.$error"
               lang="pt-BR">
             </q-datetime-picker>
             <q-datetime-picker
               v-model="attended.registrationDate"
               label="Data Matrícula"
               auto-update-value
+              :error="$v.attended.registrationDate.$error"
               lang="pt-BR">
             </q-datetime-picker>
-            <q-field label="Sexo" borderless>
+            <div ></div>
+            <q-field label="Sexo" borderless :error="$v.attended.gender.$error">
               <q-option-group
                 class="q-pt-sm"
                 v-model="attended.gender"
@@ -205,11 +208,17 @@ export default {
   validations: {
     attended: {
       name: { required },
-      registrationNumber: { required, integer, maxLength: maxLength(11) }
+      registrationNumber: { required, integer, maxLength: maxLength(11) },
+      birthDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      registrationDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      gender: { required }
     },
     editedAttended: {
       name: { required },
-      registrationNumber: { required, integer, maxLength: maxLength(11) }
+      registrationNumber: { required, integer, maxLength: maxLength(11) },
+      birthDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      registrationDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      gender: { required }
     }
   },
   mounted () {
@@ -243,6 +252,8 @@ export default {
         })
     },
     postAttended () {
+      console.log(this.attended.birthDate)
+      console.log(this.attended.registrationDate)
       this.$v.attended.$touch()
       if (!this.$v.attended.$error) {
         this.$q.loading.show({
@@ -296,6 +307,7 @@ export default {
             throw new Error(err)
           })
       } else {
+        this.$q.loading.hide()
         this.$q.notify({
           color: 'red',
           icon: 'warning',
