@@ -14,9 +14,10 @@
         :selected-rows-label="selectedRowsLabel"
         :selected.sync="selected"
         :filter="filter"
+        @request="getAttendedsBySearch()"
       >
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar">
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar" @input="getAttendedsBySearch">
           <template v-slot:append>
             <q-icon name="search" />
             <q-btn color="negative" flat round delete icon="delete" @click="deleteConfirm()" />
@@ -223,6 +224,9 @@ export default {
   },
   mounted () {
     this.getAttendeds()
+    this.getAttendedsBySearch({
+      filter: this.filter
+    })
   },
   methods: {
     getAttendeds () {
@@ -250,6 +254,31 @@ export default {
           this.loading = false
           throw new Error(err)
         })
+    },
+    getAttendedsBySearch ({ filter }) {
+      this.loading = true
+      if (this.filter === '') {
+        this.getAttendeds()
+      } else {
+        this.$axios
+          .get('https://localhost:5001/api/attendeds/search', { params: { param: filter = this.filter } })
+          .then((response) => {
+            this.attendeds = response.data
+            let count = 0
+            this.attendeds.forEach(element => {
+              this.attendeds[count].birthDate = moment(this.attendeds[count].birthDate).format('DD/MM/YYYY')
+              this.attendeds[count].registrationDate = moment(this.attendeds[count].registrationDate).format('DD/MM/YYYY')
+              this.attendeds[count].gender = this.attendeds[count].gender === 0 ? 'Masculino' : 'Feminino'
+              count++
+            })
+            this.loading = false
+          })
+          .catch((err) => {
+            console.log(err)
+            this.loading = false
+            throw new Error(err)
+          })
+      }
     },
     postAttended () {
       console.log(this.attended.birthDate)
@@ -374,6 +403,9 @@ export default {
     },
     selectedRowsLabel (numberOfRows) {
       return numberOfRows > 1 ? numberOfRows + ' linhas selecionadas' : numberOfRows + 'linha selecionada'
+    },
+    testeFilter () {
+      console.log(this.filter)
     }
   }
 }
