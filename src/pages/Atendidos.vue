@@ -17,7 +17,7 @@
         @request="getAttendedsBySearch()"
       >
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar" @input="getAttendedsBySearch">
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar nome ou matrícula" @input="getAttendedsBySearch">
           <template v-slot:append>
             <q-icon name="search" />
             <q-btn color="negative" flat round delete icon="delete" @click="deleteConfirm()" />
@@ -281,8 +281,6 @@ export default {
       }
     },
     postAttended () {
-      console.log(this.attended.birthDate)
-      console.log(this.attended.registrationDate)
       this.$v.attended.$touch()
       if (!this.$v.attended.$error) {
         this.$q.loading.show({
@@ -303,6 +301,14 @@ export default {
             this.getAttendeds()
           })
           .catch((err) => {
+            if (err.response.status === 422) {
+              this.$q.notify({
+                color: 'red',
+                icon: 'warning',
+                message: 'MATRÍCULA ' + this.attended.registrationNumber + ' JÁ VINCULADA PARA UM ATENDIDO'
+              })
+            }
+            this.$q.loading.hide()
             throw new Error(err)
           })
       } else {
