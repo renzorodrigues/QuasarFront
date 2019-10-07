@@ -25,7 +25,7 @@ module.exports = function (ctx) {
       // 'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
-      // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
+      'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
       'material-icons' // optional, you are not bound to it
@@ -61,7 +61,8 @@ module.exports = function (ctx) {
         'QForm',
         'QSpinnerPie',
         'QBadge',
-        'QCheckbox'
+        'QCheckbox',
+        'QSelect'
       ],
       directives: [
         'ClosePopup'

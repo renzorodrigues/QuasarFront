@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-btn color="primary" icon="person_add" label="CADASTRAR" @click="openModalRegister()" />
+    <q-btn color="light-blue" icon="person_add" label="CADASTRAR" @click="openModalRegister()" />
     <div class="q-pa-md">
       <q-table
         title="Atendidos"
@@ -17,7 +17,7 @@
         @request="getAttendedsBySearch()"
       >
       <template v-slot:top-right>
-        <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar nome ou matrícula" @input="getAttendedsBySearch">
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Nome ou Matrícula" @input="getAttendedsBySearch">
           <template v-slot:append>
             <q-icon name="search" />
             <q-btn color="negative" flat round delete icon="delete" @click="deleteConfirm()" />
@@ -69,34 +69,87 @@
               maxlength="10"
               :error="$v.attended.registrationNumber.$error"
             />
-            <q-datetime-picker
-              v-model="attended.birthDate"
-              label="Data Nascimento"
-              auto-update-value
-              :error="$v.attended.birthDate.$error"
-              lang="pt-BR">
-            </q-datetime-picker>
-            <q-datetime-picker
-              v-model="attended.registrationDate"
-              label="Data Matrícula"
-              auto-update-value
-              :error="$v.attended.registrationDate.$error"
-              lang="pt-BR">
-            </q-datetime-picker>
-            <div ></div>
-            <q-field label="Sexo" borderless :error="$v.attended.gender.$error">
+            <div class="row justify-between">
+              <div class="q-pr-sm col-6">
+                <q-datetime-picker
+                  v-model="attended.birthDate"
+                  label="Data Nascimento"
+                  auto-update-value
+                  :error="$v.attended.birthDate.$error"
+                  lang="pt-BR">
+                </q-datetime-picker>
+              </div>
+              <div class="q-pl-sm col-6">
+                <q-datetime-picker
+                  v-model="attended.registrationDate"
+                  label="Data Matrícula"
+                  auto-update-value
+                  :error="$v.attended.registrationDate.$error"
+                  lang="pt-BR">
+                </q-datetime-picker>
+              </div>
+            </div>
+            <q-field
+              label="Sexo"
+              borderless
+              :error="$v.attended.gender.$error"
+            >
               <q-option-group
-                class="q-pt-sm"
+                class="q-mt-md"
                 v-model="attended.gender"
                 :options="genderOptions"
-                color="primary"
                 inline
               />
             </q-field>
+            <div class="row justify-between">
+              <div class="q-pr-sm col-6">
+                <q-input
+                  type="tel"
+                  mask="(##)####-####"
+                  v-model="attended.contact.telephoneNumber"
+                  label="Telefone Fixo"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="local_phone" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="q-pl-sm col-6">
+                <q-input
+                  clear-icon="telephone"
+                  type="tel"
+                  mask="(##)#####-####"
+                  v-model="attended.contact.mobileNumber"
+                  label="Celular"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="smartphone" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+            <q-input
+              type="email"
+              v-model="attended.contact.email"
+              label="E-mail"
+              :error="$v.attended.contact.email.$error"
+            >
+              <template v-slot:prepend>
+                <q-icon name="email" />
+              </template>
+            </q-input>
+            <div class="q-gutter-md">
+              <q-input
+                v-model="attended.tutor.name"
+                label="Nome do Responsável"
+              >
+              </q-input>
+              <q-select v-model="attended.tutor.tutorType" :options="tutorTypeOptions" label="Grau de Parentesco do Responsável" />
+            </div>
           </q-card-section>
           <q-card-actions align="right">
             <q-btn flat label="Cancelar" color="primary" size="12px" @click="resetModalRegister()" v-close-popup />
-            <q-btn label="Gravar" color="primary" size="12px" icon-right="send" @click="postAttended()" />
+            <q-btn label="Gravar" color="light-blue" size="12px" icon-right="send" @click="postAttended()" />
           </q-card-actions>
         </q-card>
       </div>
@@ -133,7 +186,7 @@
                 class="q-pt-sm"
                 v-model="editedAttended.gender"
                 :options="genderOptions"
-                color="primary"
+                color="amber"
                 inline
               />
             </q-field>
@@ -163,7 +216,7 @@
 
 <script>
 import moment from 'moment'
-import { required, integer, maxLength } from 'vuelidate/lib/validators'
+import { required, integer, maxLength, email } from 'vuelidate/lib/validators'
 export default {
   name: 'AtendidosPage',
   data () {
@@ -173,7 +226,16 @@ export default {
         registrationNumber: null,
         birthDate: undefined,
         registrationDate: undefined,
-        gender: undefined
+        gender: undefined,
+        contact: {
+          telephoneNumber: undefined,
+          mobileNumber: undefined,
+          email: undefined
+        },
+        tutor: {
+          name: undefined,
+          tutorType: undefined
+        }
       },
       editedAttended: {
         id: undefined,
@@ -181,11 +243,23 @@ export default {
         registrationNumber: null,
         birthDate: undefined,
         registrationDate: undefined,
-        gender: undefined
+        gender: undefined,
+        contact: {
+          telephoneNumber: undefined,
+          mobileNumber: undefined,
+          email: undefined
+        },
+        tutor: {
+          name: undefined,
+          tutorType: undefined
+        }
       },
       genderOptions: [
-        { label: 'Masculino', value: 'male' },
-        { label: 'Feminino', value: 'female' }
+        { label: 'Masculino', value: 'male', color: 'light-blue' },
+        { label: 'Feminino', value: 'female', color: 'pink-4' }
+      ],
+      tutorTypeOptions: [
+        'Pai', 'Mãe', 'Avô', 'Avó', 'Tio', 'Tia', 'Outro'
       ],
       modalRegister: false,
       modalEdit: false,
@@ -212,7 +286,10 @@ export default {
       registrationNumber: { required, integer, maxLength: maxLength(11) },
       birthDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
       registrationDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
-      gender: { required }
+      gender: { required },
+      contact: {
+        email: { email }
+      }
     },
     editedAttended: {
       name: { required },
@@ -224,9 +301,6 @@ export default {
   },
   mounted () {
     this.getAttendeds()
-    this.getAttendedsBySearch({
-      filter: this.filter
-    })
   },
   methods: {
     getAttendeds () {
@@ -242,6 +316,7 @@ export default {
             this.attendeds[count].gender = this.attendeds[count].gender === 0 ? 'Masculino' : 'Feminino'
             count++
           })
+          console.log(this.attendeds)
           this.loading = false
         })
         .catch((err) => {
@@ -249,7 +324,7 @@ export default {
           this.$q.notify({
             color: 'amber',
             icon: 'warning',
-            message: 'FALHA AO CARREGAR DADOS'
+            message: 'DADOS NÃO CARREGADOS'
           })
           this.loading = false
           throw new Error(err)
@@ -261,7 +336,7 @@ export default {
         this.getAttendeds()
       } else {
         this.$axios
-          .get('https://localhost:5001/api/attendeds/search', { params: { param: filter = this.filter } })
+          .get('https://localhost:5001/api/attendeds/search', { params: { search: filter = this.filter } })
           .then((response) => {
             this.attendeds = response.data
             let count = 0
@@ -301,6 +376,7 @@ export default {
             this.getAttendeds()
           })
           .catch((err) => {
+            this.$q.loading.hide()
             if (err.response.status === 422) {
               this.$q.notify({
                 color: 'red',
@@ -312,6 +388,7 @@ export default {
             throw new Error(err)
           })
       } else {
+        this.$q.loading.hide()
         this.$q.notify({
           color: 'red',
           icon: 'warning',
@@ -339,6 +416,7 @@ export default {
             this.getAttendeds()
           })
           .catch((err) => {
+            this.$q.loading.hide()
             throw new Error(err)
           })
       } else {
@@ -387,6 +465,11 @@ export default {
       this.attended.birthDate = undefined
       this.attended.registrationDate = undefined
       this.attended.gender = undefined
+      this.attended.contact.telephoneNumber = undefined
+      this.attended.contact.mobileNumber = undefined
+      this.attended.contact.email = undefined
+      this.attended.tutor.name = undefined
+      this.attended.tutor.tutorType = undefined
       this.$v.$reset()
     },
     openModalRegister () {
