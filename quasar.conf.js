@@ -62,7 +62,8 @@ module.exports = function (ctx) {
         'QSpinnerPie',
         'QBadge',
         'QCheckbox',
-        'QSelect'
+        'QSelect',
+        'QEditor'
       ],
       directives: [
         'ClosePopup'
