@@ -54,11 +54,195 @@
       </template>
       </q-table>
     </div>
-    <modal-dialog-form
-      ref="modalAttended"
-      @refreshDataTable="getAttendeds()"
-      :data="attended"
-    />
+    <q-dialog v-model="modalRegister" persistent>
+      <div class="q-pa-md" style="width: 600px">
+        <q-card>
+          <q-card-section>
+            <q-input
+              v-model="attended.name"
+              label="Nome Completo"
+              :error="$v.attended.name.$error"
+            />
+            <q-input
+              v-model="attended.registrationNumber"
+              label="Matrícula"
+              maxlength="10"
+              :error="$v.attended.registrationNumber.$error"
+            />
+            <div class="row justify-between">
+              <div class="q-pr-sm col-6">
+                <q-datetime-picker
+                  v-model="attended.birthDate"
+                  label="Data Nascimento"
+                  auto-update-value
+                  :error="$v.attended.birthDate.$error"
+                  lang="pt-BR">
+                </q-datetime-picker>
+              </div>
+              <div class="q-pl-sm col-6">
+                <q-datetime-picker
+                  v-model="attended.registrationDate"
+                  label="Data Matrícula"
+                  auto-update-value
+                  :error="$v.attended.registrationDate.$error"
+                  lang="pt-BR">
+                </q-datetime-picker>
+              </div>
+            </div>
+            <q-field
+              label="Sexo"
+              borderless
+              :error="$v.attended.gender.$error"
+            >
+              <q-option-group
+                class="q-mt-md"
+                v-model="attended.gender"
+                :options="genderOptions"
+                inline
+              />
+            </q-field>
+            <div class="row justify-between">
+              <div class="q-pr-sm col-6">
+                <q-input
+                  type="tel"
+                  mask="(##)####-####"
+                  v-model="attended.contact.telephoneNumber"
+                  label="Telefone Fixo"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="local_phone" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="q-pl-sm col-6">
+                <q-input
+                  clear-icon="telephone"
+                  type="tel"
+                  mask="(##)#####-####"
+                  v-model="attended.contact.mobileNumber"
+                  label="Celular"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="smartphone" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+            <q-input
+              type="email"
+              v-model="attended.contact.email"
+              label="E-mail"
+              :error="$v.attended.contact.email.$error"
+            >
+              <template v-slot:prepend>
+                <q-icon name="email" />
+              </template>
+            </q-input>
+            <div class="q-gutter-md">
+              <q-input
+                v-model="attended.tutor.name"
+                label="Nome do Responsável"
+              >
+              </q-input>
+              <q-select v-model="attended.tutor.tutorType" :options="tutorTypeOptions" label="Grau de Parentesco do Responsável" />
+            </div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="primary" size="12px" @click="resetModalRegister()" v-close-popup />
+            <q-btn label="Gravar" color="light-blue" size="12px" icon-right="send" @click="postAttended()" />
+          </q-card-actions>
+        </q-card>
+      </div>
+    </q-dialog>
+    <q-dialog v-model="modalEdit">
+      <div class="q-pa-md" style="width: 600px">
+        <q-card>
+          <q-card-section>
+            <q-input
+              v-model="editedAttended.name"
+              label="Nome Completo"
+              :error="$v.editedAttended.name.$error"
+            />
+            <q-input
+              v-model="editedAttended.registrationNumber"
+              label="Matrícula"
+              maxlength="10"
+              :error="$v.editedAttended.registrationNumber.$error"
+            />
+            <q-datetime-picker
+              v-model="editedAttended.birthDate"
+              label="Data Nascimento"
+              auto-update-value
+              lang="pt-BR">
+            </q-datetime-picker>
+            <q-datetime-picker
+              v-model="editedAttended.registrationDate"
+              label="Data Matrícula"
+              auto-update-value
+              lang="pt-BR">
+            </q-datetime-picker>
+            <q-field label="Sexo" borderless>
+              <q-option-group
+                class="q-pt-sm"
+                v-model="editedAttended.gender"
+                :options="genderOptions"
+                color="amber"
+                inline
+              />
+            </q-field>
+            <div class="row justify-between">
+              <div class="q-pr-sm col-6">
+                <q-input
+                  type="tel"
+                  mask="(##)####-####"
+                  v-model="editedAttended.contact.telephoneNumber"
+                  label="Telefone Fixo"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="local_phone" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="q-pl-sm col-6">
+                <q-input
+                  clear-icon="telephone"
+                  type="tel"
+                  mask="(##)#####-####"
+                  v-model="editedAttended.contact.mobileNumber"
+                  label="Celular"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="smartphone" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+            <q-input
+              type="email"
+              v-model="editedAttended.contact.email"
+              label="E-mail"
+              :error="$v.editedAttended.contact.email.$error"
+            >
+              <template v-slot:prepend>
+                <q-icon name="email" />
+              </template>
+            </q-input>
+            <div class="q-gutter-md">
+              <q-input
+                v-model="editedAttended.tutor.name"
+                label="Nome do Responsável"
+              >
+              </q-input>
+              <q-select v-model="editedAttended.tutor.tutorType" :options="tutorTypeOptions" label="Grau de Parentesco do Responsável" />
+            </div>
+          </q-card-section>
+          <q-card-actions align="right">
+            <q-btn flat label="Cancelar" color="primary" size="12px" v-close-popup />
+            <q-btn label="Editar" color="orange" size="12px" icon-right="send" @click="putAttended()" />
+          </q-card-actions>
+        </q-card>
+      </div>
+    </q-dialog>
     <q-dialog v-model="modalConfirm" persistent>
       <q-card>
         <q-card-section class="row items-center">
@@ -77,15 +261,11 @@
 
 <script>
 import moment from 'moment'
-import modalDialogForm from '../components/ModalDialogForm'
+import { required, integer, maxLength, email } from 'vuelidate/lib/validators'
 export default {
   name: 'AtendidosPage',
-  components: {
-    'modal-dialog-form': modalDialogForm
-  },
   data () {
     return {
-      attendeds: [],
       attended: {
         name: undefined,
         registrationNumber: null,
@@ -102,7 +282,39 @@ export default {
           tutorType: undefined
         }
       },
-      modalAttended: false,
+      editedAttended: {
+        id: undefined,
+        name: undefined,
+        registrationNumber: null,
+        birthDate: undefined,
+        registrationDate: undefined,
+        gender: undefined,
+        contact: {
+          telephoneNumber: undefined,
+          mobileNumber: undefined,
+          email: undefined
+        },
+        tutor: {
+          name: undefined,
+          tutorType: undefined
+        }
+      },
+      genderOptions: [
+        { label: 'Masculino', value: 'male', color: 'light-blue' },
+        { label: 'Feminino', value: 'female', color: 'pink-4' }
+      ],
+      tutorTypeOptions: [
+        'Pai', 'Mãe', 'Avô', 'Avó', 'Tio', 'Tia', 'Outro'
+        // { label: 'Pai', value: 'father' },
+        // { label: 'Mãe', value: 'mother' },
+        // { label: 'Avô', value: 'grandfather' },
+        // { label: 'Avó', value: 'grandmother' },
+        // { label: 'Tio', value: 'uncle' },
+        // { label: 'Tia', value: 'aunt' },
+        // { label: 'Outro', value: 'other' }
+      ],
+      modalRegister: false,
+      modalEdit: false,
       modalConfirm: false,
       filter: '',
       loading: true,
@@ -116,7 +328,30 @@ export default {
         { name: 'gender', label: 'Sexo', field: 'gender', sortable: true, align: 'left' },
         { name: 'edit', label: 'Editar', field: 'edit', sortable: true, align: 'left' },
         { name: 'report', label: 'Relatório', field: 'report', sortable: true, align: 'left' }
-      ]
+      ],
+      attendeds: []
+    }
+  },
+  validations: {
+    attended: {
+      name: { required },
+      registrationNumber: { required, integer, maxLength: maxLength(11) },
+      birthDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      registrationDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      gender: { required },
+      contact: {
+        email: { email }
+      }
+    },
+    editedAttended: {
+      name: { required },
+      registrationNumber: { required, integer, maxLength: maxLength(11) },
+      birthDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      registrationDate: { required, between: value => value > '1900-01-01T00:00:00' && value <= new Date().toISOString() },
+      gender: { required },
+      contact: {
+        email: { email }
+      }
     }
   },
   mounted () {
@@ -175,6 +410,81 @@ export default {
           })
       }
     },
+    postAttended () {
+      this.$v.attended.$touch()
+      if (!this.$v.attended.$error) {
+        this.$q.loading.show({
+          delay: 200,
+          spinner: 'QSpinnerPie'
+        })
+        this.closeModalRegister()
+        this.attended.tutor.tutorType = this.attended.tutor.tutorType === undefined ? 'other' : this.tutorTypeStrToEnum(this.attended.tutor.tutorType)
+        this.$axios
+          .post('https://localhost:5001/api/attendeds', this.attended)
+          .then((response) => {
+            this.$q.notify({
+              color: 'green',
+              icon: 'done',
+              message: 'CADASTRADO COM SUCESSO!'
+            })
+            this.$q.loading.hide()
+            this.resetModalRegister()
+            this.getAttendeds()
+          })
+          .catch((err) => {
+            this.$q.loading.hide()
+            if (err.response.status === 422) {
+              this.$q.notify({
+                color: 'red',
+                icon: 'warning',
+                message: 'MATRÍCULA ' + this.attended.registrationNumber + ' JÁ VINCULADA PARA UM ATENDIDO'
+              })
+            }
+            this.$q.loading.hide()
+            throw new Error(err)
+          })
+      } else {
+        this.$q.loading.hide()
+        this.$q.notify({
+          color: 'red',
+          icon: 'warning',
+          message: 'PREENCHA OS CAMPOS CORRETAMENTE'
+        })
+      }
+    },
+    putAttended () {
+      this.$v.editedAttended.$touch()
+      if (!this.$v.editedAttended.$error) {
+        this.$q.loading.show({
+          delay: 200,
+          spinner: 'QSpinnerPie'
+        })
+        this.closeModalEdit()
+        this.editedAttended.tutor.tutorType = this.editedAttended.tutor.tutorType === undefined ? 'other' : this.tutorTypeStrToEnum(this.editedAttended.tutor.tutorType)
+        this.$axios
+          .put('https://localhost:5001/api/attendeds/' + this.editedAttended.id + '/', this.editedAttended)
+          .then((response) => {
+            this.$q.notify({
+              color: 'green',
+              icon: 'done',
+              message: 'EDITADO COM SUCESSO!'
+            })
+            this.$q.loading.hide()
+            this.getAttendeds()
+          })
+          .catch((err) => {
+            this.$q.loading.hide()
+            throw new Error(err)
+          })
+      } else {
+        this.$q.loading.hide()
+        this.$q.notify({
+          color: 'red',
+          icon: 'warning',
+          message: 'PREENCHA OS CAMPOS CORRETAMENTE'
+        })
+      }
+    },
     deleteConfirm () {
       if (this.selected.length < 1) {
         this.$q.notify({
@@ -206,15 +516,81 @@ export default {
           })
       })
     },
-    openModalRegister () {
-      this.$refs.modalAttended.showDialog()
+    resetModalRegister () {
+      this.attended.name = undefined
+      this.attended.registrationNumber = null
+      this.attended.birthDate = undefined
+      this.attended.registrationDate = undefined
+      this.attended.gender = undefined
+      this.attended.contact.telephoneNumber = undefined
+      this.attended.contact.mobileNumber = undefined
+      this.attended.contact.email = undefined
+      this.attended.tutor.name = undefined
+      this.attended.tutor.tutorType = undefined
+      this.$v.$reset()
     },
-    openModalEdit (obj) {
-      this.$refs.modalAttended.fillForm(obj)
-      this.$refs.modalAttended.showDialog()
+    openModalRegister () {
+      this.modalRegister = true
+    },
+    closeModalRegister () {
+      this.modalRegister = false
+    },
+    openModalEdit (row) {
+      console.log(row)
+      this.editedAttended.id = row.id
+      this.editedAttended.name = row.name
+      this.editedAttended.registrationNumber = row.registrationNumber
+      this.editedAttended.birthDate = moment(row.birthDate, 'DD/MM/YYYY').format('MM-DD-YYYY')
+      this.editedAttended.registrationDate = moment(row.registrationDate, 'DD/MM/YYYY').format('MM-DD-YYYY')
+      this.editedAttended.gender = row.gender === 'Masculino' ? 'male' : 'female'
+      this.editedAttended.contact.telephoneNumber = row.contact.telephoneNumber
+      this.editedAttended.contact.mobileNumber = row.contact.mobileNumber
+      this.editedAttended.contact.email = row.contact.email
+      this.editedAttended.tutor.name = row.tutor.name
+      this.editedAttended.tutor.tutorType = this.tutorTypeEnumToStr(row.tutor.tutorType)
+      this.modalEdit = true
+    },
+    closeModalEdit () {
+      this.modalEdit = false
     },
     selectedRowsLabel (numberOfRows) {
       return numberOfRows > 1 ? numberOfRows + ' linhas selecionadas' : numberOfRows + 'linha selecionada'
+    },
+    tutorTypeEnumToStr (tutorType) {
+      switch (tutorType) {
+        case 0:
+          return 'Pai'
+        case 1:
+          return 'Mãe'
+        case 2:
+          return 'Avô'
+        case 3:
+          return 'Avó'
+        case 4:
+          return 'Tio'
+        case 5:
+          return 'Tia'
+        case 6:
+          return 'Outro'
+      }
+    },
+    tutorTypeStrToEnum (tutorType) {
+      switch (tutorType) {
+        case 'Pai':
+          return 'father'
+        case 'Mãe':
+          return 'mother'
+        case 'Avô':
+          return 'grandfather'
+        case 'Avó':
+          return 'grandfather'
+        case 'Tio':
+          return 'uncle'
+        case 'Tia':
+          return 'aunt'
+        case 'Outro':
+          return 'other'
+      }
     }
   }
 }
