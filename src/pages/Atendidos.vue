@@ -305,13 +305,6 @@ export default {
       ],
       tutorTypeOptions: [
         'Pai', 'Mãe', 'Avô', 'Avó', 'Tio', 'Tia', 'Outro'
-        // { label: 'Pai', value: 'father' },
-        // { label: 'Mãe', value: 'mother' },
-        // { label: 'Avô', value: 'grandfather' },
-        // { label: 'Avó', value: 'grandmother' },
-        // { label: 'Tio', value: 'uncle' },
-        // { label: 'Tia', value: 'aunt' },
-        // { label: 'Outro', value: 'other' }
       ],
       modalRegister: false,
       modalEdit: false,

@@ -63,7 +63,8 @@ module.exports = function (ctx) {
         'QBadge',
         'QCheckbox',
         'QSelect',
-        'QEditor'
+        'QEditor',
+        'QLayout'
       ],
       directives: [
         'ClosePopup'
