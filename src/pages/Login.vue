@@ -11,7 +11,7 @@
             >
               <q-input
                 filled
-                v-model="login.email"
+                v-model="credential.email"
                 label="E-mail"
                 hint="Digite seu e-mail"
                 lazy-rules
@@ -21,7 +21,7 @@
               <q-input
                 filled
                 type="password"
-                v-model="login.password"
+                v-model="credential.password"
                 label="Senha"
                 hint="Digite sua senha"
                 lazy-rules
@@ -56,7 +56,7 @@ export default {
   data () {
     return {
       submitting: false,
-      login: {
+      credential: {
         email: '',
         password: ''
       },
@@ -66,17 +66,40 @@ export default {
   methods: {
     onSubmit () {
       this.simulateSubmit(true)
-      console.log(this.login)
+      console.log(this.credential)
       this.$axios
-        .post('https://localhost:5001/api/login', this.login)
+        .post('https://localhost:5001/api/auth', this.credential)
         .then((response) => {
           console.log(response)
           this.simulateSubmit(false)
+          this.$q.notify({
+            position: 'top-right',
+            color: 'green',
+            icon: 'done',
+            message: 'LOGADO COM SUCESSO!'
+          })
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            this.$q.notify({
+              color: 'orange',
+              icon: 'warning',
+              message: 'E-MAIL NÃO EXISTENTE OU SENHA INCORRETA'
+            })
+          } else {
+            this.$q.notify({
+              color: 'red',
+              icon: 'error',
+              message: 'NÃO FOI POSSÍVEL CONECTAR'
+            })
+          }
+          this.simulateSubmit(false)
+          throw new Error(err)
         })
     },
     onReset () {
-      this.login.email = ''
-      this.login.password = ''
+      this.credential.email = ''
+      this.credential.password = ''
     },
     simulateSubmit (loading) {
       this.submitting = loading

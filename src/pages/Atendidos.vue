@@ -186,7 +186,6 @@
                 class="q-pt-sm"
                 v-model="editedAttended.gender"
                 :options="genderOptions"
-                color="amber"
                 inline
               />
             </q-field>
@@ -370,8 +369,8 @@ export default {
         .catch((err) => {
           console.log(err)
           this.$q.notify({
-            color: 'amber',
-            icon: 'warning',
+            color: 'red',
+            icon: 'error',
             message: 'DADOS NÃO CARREGADOS'
           })
           this.loading = false
@@ -428,7 +427,7 @@ export default {
             this.$q.loading.hide()
             if (err.response.status === 422) {
               this.$q.notify({
-                color: 'red',
+                color: 'orange',
                 icon: 'warning',
                 message: 'MATRÍCULA ' + this.attended.registrationNumber + ' JÁ VINCULADA PARA UM ATENDIDO'
               })
@@ -439,7 +438,7 @@ export default {
       } else {
         this.$q.loading.hide()
         this.$q.notify({
-          color: 'red',
+          color: 'orange',
           icon: 'warning',
           message: 'PREENCHA OS CAMPOS CORRETAMENTE'
         })
@@ -472,7 +471,7 @@ export default {
       } else {
         this.$q.loading.hide()
         this.$q.notify({
-          color: 'red',
+          color: 'orange',
           icon: 'warning',
           message: 'PREENCHA OS CAMPOS CORRETAMENTE'
         })
@@ -481,7 +480,7 @@ export default {
     deleteConfirm () {
       if (this.selected.length < 1) {
         this.$q.notify({
-          color: 'red',
+          color: 'orange',
           icon: 'warning',
           message: 'NENHUMA LINHA SELECIONADA'
         })
@@ -576,7 +575,7 @@ export default {
         case 'Avô':
           return 'grandfather'
         case 'Avó':
-          return 'grandfather'
+          return 'grandmother'
         case 'Tio':
           return 'uncle'
         case 'Tia':
