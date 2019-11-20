@@ -1,6 +1,6 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh Lpr Fff">
+    <q-header reveal="reveal">
       <q-toolbar>
         <q-btn
           flat
@@ -12,10 +12,14 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          Psyko Report
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn
+          label="Logout"
+          @click="logout()"
+          icon="logout"
+        />
       </q-toolbar>
     </q-header>
 
@@ -85,6 +89,15 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-footer reveal="reveal">
+      <div class="q-pa-sm" align="right">
+        <span style="font-size: 11px">developed by </span>
+        <span style="font-size: 11px; color: yellow">
+          <q-tooltip>renzors@gmail.com</q-tooltip>
+          RRS
+        </span>
+      </div>
+    </q-footer>
   </q-layout>
 </template>
 
@@ -95,6 +108,12 @@ export default {
   data () {
     return {
       leftDrawerOpen: false
+    }
+  },
+  methods: {
+    logout () {
+      localStorage.removeItem('token')
+      this.$router.push('/login')
     }
   }
 }

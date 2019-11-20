@@ -5,13 +5,13 @@
         <q-card-section class="my-card-section">
           <div class="q-pa-md" style="max-width: 400px">
             <q-form
-              @submit="onSubmit"
+              @submit.prevent="onSubmit"
               @reset="onReset"
               class="q-gutter-md"
             >
               <q-input
                 filled
-                v-model="credential.email"
+                v-model="credentials.email"
                 label="E-mail"
                 hint="Digite seu e-mail"
                 lazy-rules
@@ -21,7 +21,7 @@
               <q-input
                 filled
                 type="password"
-                v-model="credential.password"
+                v-model="credentials.password"
                 label="Senha"
                 hint="Digite sua senha"
                 lazy-rules
@@ -56,50 +56,57 @@ export default {
   data () {
     return {
       submitting: false,
-      credential: {
+      credentials: {
         email: '',
         password: ''
       },
+      token: undefined,
       accept: false
     }
   },
   methods: {
     onSubmit () {
       this.simulateSubmit(true)
-      console.log(this.credential)
-      this.$axios
-        .post('https://localhost:5001/api/auth', this.credential)
-        .then((response) => {
-          console.log(response)
-          this.simulateSubmit(false)
-          this.$q.notify({
-            position: 'top-right',
-            color: 'green',
-            icon: 'done',
-            message: 'LOGADO COM SUCESSO!'
+      return new Promise((resolve, reject) => {
+        this.$axios
+          .post('https://localhost:5001/api/auth', this.credentials)
+          .then((response) => {
+            if (response) {
+              localStorage.setItem('token', response.data)
+              this.$router.push('/')
+              resolve(response)
+            }
+            this.simulateSubmit(false)
+            this.$q.notify({
+              position: 'top-right',
+              color: 'green',
+              icon: 'done',
+              message: 'LOGADO COM SUCESSO!'
+            })
           })
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$q.notify({
-              color: 'orange',
-              icon: 'warning',
-              message: 'E-MAIL NÃO EXISTENTE OU SENHA INCORRETA'
-            })
-          } else {
-            this.$q.notify({
-              color: 'red',
-              icon: 'error',
-              message: 'NÃO FOI POSSÍVEL CONECTAR'
-            })
-          }
-          this.simulateSubmit(false)
-          throw new Error(err)
-        })
+          .catch((err) => {
+            if (err.response.status === 401) {
+              this.$q.notify({
+                color: 'orange',
+                icon: 'warning',
+                message: 'E-MAIL NÃO EXISTENTE OU SENHA INCORRETA'
+              })
+            } else {
+              this.$q.notify({
+                color: 'red',
+                icon: 'error',
+                message: 'NÃO FOI POSSÍVEL CONECTAR'
+              })
+            }
+            this.simulateSubmit(false)
+            reject(err)
+            throw new Error(err)
+          })
+      })
     },
     onReset () {
-      this.credential.email = ''
-      this.credential.password = ''
+      this.credentials.email = ''
+      this.credentials.password = ''
     },
     simulateSubmit (loading) {
       this.submitting = loading
@@ -109,7 +116,7 @@ export default {
 </script>
 <style lang="stylus">
 .my-card
-  background-color #011727
+  background url('../assets/images/logo.jpg');
   width 100%
   height 400px
 
@@ -117,7 +124,7 @@ export default {
   width 400px
   position $relative
   left 50%
-  top 80%
+  top 70%
   margin-left -200px
   margin-top -50px
   background-color #A6B3BE

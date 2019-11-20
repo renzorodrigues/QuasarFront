@@ -168,15 +168,18 @@
               label="Matrícula"
               maxlength="10"
               :error="$v.editedAttended.registrationNumber.$error"
+              :disable="true"
             />
             <q-datetime-picker
               v-model="editedAttended.birthDate"
               label="Data Nascimento"
+              :error="$v.editedAttended.birthDate.$error"
               auto-update-value
               lang="pt-BR">
             </q-datetime-picker>
             <q-datetime-picker
               v-model="editedAttended.registrationDate"
+              :error="$v.editedAttended.registrationDate.$error"
               label="Data Matrícula"
               auto-update-value
               lang="pt-BR">
@@ -346,6 +349,9 @@ export default {
       }
     }
   },
+  created () {
+    this.interceptor()
+  },
   mounted () {
     this.getAttendeds()
   },
@@ -363,7 +369,6 @@ export default {
             this.attendeds[count].gender = this.attendeds[count].gender === 0 ? 'Masculino' : 'Feminino'
             count++
           })
-          console.log(this.attendeds)
           this.loading = false
         })
         .catch((err) => {
@@ -425,7 +430,7 @@ export default {
           })
           .catch((err) => {
             this.$q.loading.hide()
-            if (err.response.status === 422) {
+            if (err.response.status === 409) {
               this.$q.notify({
                 color: 'orange',
                 icon: 'warning',
@@ -583,6 +588,35 @@ export default {
         case 'Outro':
           return 'other'
       }
+    },
+    interceptor () {
+      // Add a request interceptor
+      this.$axios.interceptors.request.use((config) => {
+        console.log('request sent')
+        const token = localStorage.getItem('token')
+        config.headers['Authorization'] = 'Bearer ' + token
+        config.headers['X-Requested-With'] = 'XMLHttpRequest'
+        config.headers['Expires'] = '-1'
+        config.headers['Cache-Control'] = 'no-cache,no-store,must-revalidate,max-age=-1,private'
+        // Do something before request is sent
+        this.loading = true
+        return config
+      }, (error) => {
+        console.log('request failed')
+        this.loading = false
+        // Do something with request error
+        return Promise.reject(error)
+      })
+      // Add a response interceptor
+      this.$axios.interceptors.response.use((response) => {
+        // Do something with response data
+        return response
+      }, (error) => {
+        console.log('response failed')
+        // Do something with response error
+        this.loading = false
+        return Promise.reject(error)
+      })
     }
   }
 }
