@@ -11,6 +11,10 @@
     "lint": "eslint --ext .js,.vue src",
     "test": "echo \"No test specified\" && exit 0"
   },
+  "keywords": [
+    "example",
+    "heroku"
+  ],
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
