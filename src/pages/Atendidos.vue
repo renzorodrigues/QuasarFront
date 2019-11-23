@@ -372,7 +372,6 @@ export default {
           this.loading = false
         })
         .catch((err) => {
-          console.log(err)
           this.$q.notify({
             color: 'red',
             icon: 'error',
@@ -401,7 +400,6 @@ export default {
             this.loading = false
           })
           .catch((err) => {
-            console.log(err)
             this.loading = false
             throw new Error(err)
           })
@@ -495,7 +493,6 @@ export default {
     },
     deleteAttendeds () {
       this.selected.forEach(element => {
-        console.log(element.id)
         this.$axios
           .delete('https://localhost:5001/api/attendeds/' + element.id + '/')
           .then((response) => {
@@ -533,7 +530,6 @@ export default {
       this.modalRegister = false
     },
     openModalEdit (row) {
-      console.log(row)
       this.editedAttended.id = row.id
       this.editedAttended.name = row.name
       this.editedAttended.registrationNumber = row.registrationNumber
@@ -592,7 +588,6 @@ export default {
     interceptor () {
       // Add a request interceptor
       this.$axios.interceptors.request.use((config) => {
-        console.log('request sent')
         const token = localStorage.getItem('token')
         config.headers['Authorization'] = 'Bearer ' + token
         config.headers['X-Requested-With'] = 'XMLHttpRequest'
@@ -602,7 +597,6 @@ export default {
         this.loading = true
         return config
       }, (error) => {
-        console.log('request failed')
         this.loading = false
         // Do something with request error
         return Promise.reject(error)
@@ -612,7 +606,6 @@ export default {
         // Do something with response data
         return response
       }, (error) => {
-        console.log('response failed')
         // Do something with response error
         this.loading = false
         return Promise.reject(error)
