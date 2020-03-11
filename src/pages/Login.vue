@@ -1,9 +1,9 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-card class="my-card">
-        <q-card-section class="my-card-section">
-          <div class="q-pa-md" style="max-width: 400px">
+      <q-card class="my-card-login">
+        <q-card-section class="my-card-section-login">
+          <div class="q-pa-md my-div-card-login" style="max-width: 400px">
             <q-form
               @submit.prevent="onSubmit"
               @reset="onReset"
@@ -44,6 +44,22 @@
               </div>
             </q-form>
           </div>
+          <!--
+          <div class="q-pa-md text-right">
+            <q-btn class="q-mr-md"
+              flat
+              size="sm">Esqueceu a senha?
+            </q-btn>
+            <q-btn
+                label="Registrar"
+                type="button"
+                color="green"
+                size="sm"
+                @click="register"
+              >
+           </q-btn>
+          </div>
+          -->
         </q-card-section>
       </q-card>
     </q-page-container>
@@ -61,7 +77,8 @@ export default {
         password: ''
       },
       token: undefined,
-      accept: false
+      accept: false,
+      urlString: 'https://localhost:5001/api/auth/' // 'https://psykoreportapi.herokuapp.com/api/auth'
     }
   },
   methods: {
@@ -69,7 +86,7 @@ export default {
       this.simulateSubmit(true)
       return new Promise((resolve, reject) => {
         this.$axios
-          .post('https://localhost:5001/api/auth', this.credentials)
+          .post(this.urlString, this.credentials)
           .then((response) => {
             if (response) {
               localStorage.setItem('token', response.data)
@@ -110,22 +127,26 @@ export default {
     },
     simulateSubmit (loading) {
       this.submitting = loading
+    },
+    register () {
+      this.$router.replace('/register')
     }
   }
 }
 </script>
 <style lang="stylus">
-.my-card
+.my-card-login
   background url('../assets/images/logo.jpg');
   width 100%
   height 400px
 
-.my-card-section
+.my-div-card-login
+    background-color #FFFFFF
+
+.my-card-section-login
   width 400px
-  position $relative
   left 50%
-  top 70%
+  top 300px
   margin-left -200px
-  margin-top -50px
-  background-color #A6B3BE
+  margin-top -100px
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md">
-    <q-btn color="light-blue" icon="person_add" label="CADASTRAR" @click="openModalRegister()" />
+    <q-btn color="light-blue-10" icon="person_add" label="CADASTRAR" @click="openModalRegister()" />
     <div class="q-pa-md">
       <q-table
         title="Atendidos"
@@ -149,7 +149,7 @@
           </q-card-section>
           <q-card-actions align="right">
             <q-btn flat label="Cancelar" color="primary" size="12px" @click="resetModalRegister()" v-close-popup />
-            <q-btn label="Gravar" color="light-blue" size="12px" icon-right="send" @click="postAttended()" />
+            <q-btn label="Gravar" color="light-blue-10" size="12px" icon-right="send" @click="postAttended()" />
           </q-card-actions>
         </q-card>
       </div>
@@ -324,7 +324,8 @@ export default {
         { name: 'edit', label: 'Editar', field: 'edit', sortable: true, align: 'left' },
         { name: 'report', label: 'Relatório', field: 'report', sortable: true, align: 'left' }
       ],
-      attendeds: []
+      attendeds: [],
+      urlString: 'https://localhost:5001/api/attendeds/' // 'https://psykoreportapi.herokuapp.com/api/attendeds/'
     }
   },
   validations: {
@@ -359,9 +360,10 @@ export default {
     getAttendeds () {
       this.loading = true
       this.$axios
-        .get('https://localhost:5001/api/attendeds')
+        .get(this.urlString)
         .then((response) => {
           this.attendeds = response.data
+          console.log(this.attendeds)
           let count = 0
           this.attendeds.forEach(element => {
             this.attendeds[count].birthDate = moment(this.attendeds[count].birthDate).format('DD/MM/YYYY')
@@ -387,7 +389,7 @@ export default {
         this.getAttendeds()
       } else {
         this.$axios
-          .get('https://localhost:5001/api/attendeds/search', { params: { search: filter = this.filter } })
+          .get(this.urlString, { params: { search: filter = this.filter } })
           .then((response) => {
             this.attendeds = response.data
             let count = 0
@@ -415,7 +417,7 @@ export default {
         this.closeModalRegister()
         this.attended.tutor.tutorType = this.attended.tutor.tutorType === undefined ? 'other' : this.tutorTypeStrToEnum(this.attended.tutor.tutorType)
         this.$axios
-          .post('https://localhost:5001/api/attendeds', this.attended)
+          .post(this.urlString, this.attended)
           .then((response) => {
             this.$q.notify({
               color: 'green',
@@ -457,7 +459,7 @@ export default {
         this.closeModalEdit()
         this.editedAttended.tutor.tutorType = this.editedAttended.tutor.tutorType === undefined ? 'other' : this.tutorTypeStrToEnum(this.editedAttended.tutor.tutorType)
         this.$axios
-          .put('https://localhost:5001/api/attendeds/' + this.editedAttended.id + '/', this.editedAttended)
+          .put(this.urlString + this.editedAttended.id + '/', this.editedAttended)
           .then((response) => {
             this.$q.notify({
               color: 'green',
@@ -494,7 +496,7 @@ export default {
     deleteAttendeds () {
       this.selected.forEach(element => {
         this.$axios
-          .delete('https://localhost:5001/api/attendeds/' + element.id + '/')
+          .delete(this.urlString + element.id + '/')
           .then((response) => {
             this.$q.notify({
               timeout: 4000,

@@ -7,7 +7,9 @@
   "author": "Renzo <renzors@gmail.com>",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "quasar build",
+    "deploy": "now"
   },
   "keywords": [
     "example",

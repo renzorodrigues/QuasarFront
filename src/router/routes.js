@@ -12,6 +12,17 @@ const routes = [
     }
   },
   {
+    path: '/register',
+    component: () => import('pages/Register.vue'),
+    beforeEnter (to, from, next) {
+      if (localStorage.getItem('token') != null) {
+        next('/')
+      } else {
+        next()
+      }
+    }
+  },
+  {
     path: '/',
     component: () => import('layouts/MyLayout.vue'),
     beforeEnter (to, from, next) {
@@ -26,13 +37,43 @@ const routes = [
     children: [
       {
         path: '',
-        component: () => import('pages/Index.vue')
+        component: () => import('pages/Index.vue'),
+        beforeEnter (to, from, next) {
+          if (localStorage.getItem('token') != null) {
+            next()
+          } else {
+            next({
+              path: '/login'
+            })
+          }
+        }
       },
       {
         path: '/atendidos',
-        component: () => import('pages/Atendidos.vue')
+        component: () => import('pages/Atendidos.vue'),
+        beforeEnter (to, from, next) {
+          if (localStorage.getItem('token') != null) {
+            next()
+          } else {
+            next({
+              path: '/login'
+            })
+          }
+        }
       },
-      { path: '/relatorio', component: () => import('pages/Relatorio.vue') }
+      {
+        path: '/relatorio',
+        component: () => import('pages/Relatorio.vue'),
+        beforeEnter (to, from, next) {
+          if (localStorage.getItem('token') != null) {
+            next()
+          } else {
+            next({
+              path: '/login'
+            })
+          }
+        }
+      }
     ]
   }
 ]

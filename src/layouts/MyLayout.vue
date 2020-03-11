@@ -44,7 +44,7 @@
             <q-icon name="assignment" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Relatório</q-item-label>
+            <q-item-label>Criar Relatório</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable tag="a" target="_blank" href="https://chat.quasar.dev">
@@ -104,7 +104,9 @@
 <script>
 export default {
   name: 'MyLayout',
-
+  created () {
+    console.log('layout aqui')
+  },
   data () {
     return {
       leftDrawerOpen: false

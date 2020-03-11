@@ -65,7 +65,8 @@ module.exports = function (ctx) {
         'QSelect',
         'QEditor',
         'QLayout',
-        'QTooltip'
+        'QTooltip',
+        'QPagination'
       ],
       directives: [
         'ClosePopup'
@@ -84,6 +85,7 @@ module.exports = function (ctx) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       scopeHoisting: true,
+      distDir: ctx.mode.spa ? 'public' : null,
       // vueRouterMode: 'history',
       // showProgress: false,
       // gzip: true,
