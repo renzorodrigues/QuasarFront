@@ -104,9 +104,6 @@
 <script>
 export default {
   name: 'MyLayout',
-  created () {
-    console.log('layout aqui')
-  },
   data () {
     return {
       leftDrawerOpen: false

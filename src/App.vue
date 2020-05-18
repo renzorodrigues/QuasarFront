@@ -6,9 +6,6 @@
 
 <script>
 export default {
-  name: 'App',
-  created () {
-    console.log('fui criado')
-  }
+  name: 'App'
 }
 </script>

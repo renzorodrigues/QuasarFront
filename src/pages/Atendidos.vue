@@ -325,7 +325,7 @@ export default {
         { name: 'report', label: 'Relatório', field: 'report', sortable: true, align: 'left' }
       ],
       attendeds: [],
-      urlString: 'https://localhost:5001/api/attendeds/' // 'https://psykoreportapi.herokuapp.com/api/attendeds/'
+      urlString: 'https://psykoreportapi.herokuapp.com/api/attendeds/' // 'https://localhost:5001/api/attendeds/'
     }
   },
   validations: {
@@ -363,7 +363,6 @@ export default {
         .get(this.urlString)
         .then((response) => {
           this.attendeds = response.data
-          console.log(this.attendeds)
           let count = 0
           this.attendeds.forEach(element => {
             this.attendeds[count].birthDate = moment(this.attendeds[count].birthDate).format('DD/MM/YYYY')

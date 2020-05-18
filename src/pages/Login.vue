@@ -78,7 +78,7 @@ export default {
       },
       token: undefined,
       accept: false,
-      urlString: 'https://localhost:5001/api/auth/' // 'https://psykoreportapi.herokuapp.com/api/auth'
+      urlString: 'https://psykoreportapi.herokuapp.com/api/auth' // 'https://localhost:5001/api/auth/'
     }
   },
   methods: {

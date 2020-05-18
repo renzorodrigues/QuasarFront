@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex flex-center">
-    <h1>opa</h1>
+    <h2>Seja Bem-vindo(a)</h2>
   </q-page>
 </template>
 
